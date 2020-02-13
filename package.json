@@ -1,0 +1,24 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "fullstackopenPart3",
+  "main": "index.js",
+  "scripts": {
+    "test": "testcmd" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davemk00/FSO_part3.git"
+  },
+  "keywords": [
+    "fullstackopen",
+    "part3",
+    "phonebook"
+  ],
+  "author": "David King",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davemk00/FSO_part3/issues"
+  },
+  "homepage": "https://github.com/davemk00/FSO_part3#readme"
+}

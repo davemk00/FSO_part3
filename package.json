@@ -4,7 +4,8 @@
   "description": "fullstackopenPart3",
   "main": "index.js",
   "scripts": {
-    "test": "testcmd" 
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/davemk00/FSO_part3/issues"
   },
-  "homepage": "https://github.com/davemk00/FSO_part3#readme"
+  "homepage": "https://github.com/davemk00/FSO_part3#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }

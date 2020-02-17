@@ -25,11 +25,32 @@ let persons = [
 ]
 
 app.get('/', (req, res) =>{
-  res.send('<h1>Hello World!</h1>')
+  res.send(`<h1>DK Phonebook</h1>
+  <p>Use:
+  <ul>
+  <li>./api/persons</li> 
+  <li>./api/persons/#</li> 
+  <li>./info</li> 
+  </ul></p>`)
 })
+
+app.get('/info', (req, res) =>{
+  res.send(
+    `<p>The phonebook has info for ${persons.length} people</p>
+    <p>${Date().toLocaleString()}</p>`)
+}) 
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+  res.json(person)
+
+
 })
 
 const port = 3001

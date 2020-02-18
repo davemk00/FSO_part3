@@ -74,6 +74,22 @@ app.post('/api/persons', (req, res) => {
   const body = req.body
   console.log(body)
 
+  if (!body.name || !body.number) {
+    return res.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+  //Check that the person is already in the list 
+  const checkExists = persons.findIndex(person => person.name.toLowerCase() === body.name.toLowerCase())
+  if (checkExists) {
+    console.log("error: name already exists")
+    return res.status(409).json({
+      error: 'name already exists'
+    })
+  }
+
+
   const person = {
     name: body.name,
     number: body.number || false,

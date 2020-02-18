@@ -1,15 +1,35 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const morgan = require('morgan')
+var morgan = require('morgan')
 
 app.use(bodyParser.json())
 
-morgan.token('id', function getId(req) {
-  return req.id
+// Logger when not a POST request
+// Use default 'tiny' string format
+app.use(morgan('tiny', { 
+  skip: (req) => { return req.method == "POST" },
+  stream: process.stdout 
+}));
+
+
+// Logger when it is a POST request
+// Create new token
+morgan.token('reqData', (req) => {
+  return(JSON.stringify({ "name": req.body.name, "number": req.body.number}))
 });
 
-app.use(morgan('tiny'));
+// set string format
+var POSTLoggerFormat = ':method :url :status :res[content-length] - :response-time ms :reqData';
+
+// log POST using strring format and created token
+app.use(morgan(POSTLoggerFormat, {
+  skip: (req) => { return req.method != "POST" },
+  stream: process.stdout 
+}));
+
+
+
 
 let persons = [
   {
@@ -83,13 +103,14 @@ app.post('/api/persons', (req, res) => {
 
   if (!body.name || !body.number) {
     return res.status(400).json({ 
-      error: 'content missing' 
+      error: 'content missing'
     })
   }
 
   //Check that the person is already in the list 
   const checkExists = persons.findIndex(person => person.name.toLowerCase() === body.name.toLowerCase())
-  if (checkExists) {
+
+  if (checkExists > 0) {
     console.log("error: name already exists")
     return res.status(409).json({
       error: 'name already exists'

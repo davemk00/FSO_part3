@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
 
 let persons = [
   {
@@ -67,3 +70,21 @@ const port = 3001
 app.listen(port)
 console.log(`Server running on port ${port}`)
 
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+  console.log(body)
+
+  const person = {
+    name: body.name,
+    number: body.number || false,
+    id: getRandomInt(10000),
+  }
+
+  persons = persons.concat(person)
+  res.json(body)
+})
+
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}

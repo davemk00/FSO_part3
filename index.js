@@ -1,17 +1,21 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-var morgan = require('morgan')
+const morgan = require('morgan')
+const cors = require('cors')
 
+// cors middleware
+app.use(cors())
+
+// bodyParser middleware
 app.use(bodyParser.json())
 
-// Logger when not a POST request
+// Logger middleware when not a POST request
 // Use default 'tiny' string format
 app.use(morgan('tiny', { 
   skip: (req) => { return req.method == "POST" },
   stream: process.stdout 
 }));
-
 
 // Logger when it is a POST request
 // Create new token
@@ -22,7 +26,7 @@ morgan.token('reqData', (req) => {
 // set string format
 var POSTLoggerFormat = ':method :url :status :res[content-length] - :response-time ms :reqData';
 
-// log POST using strring format and created token
+// log POST using string format and created token
 app.use(morgan(POSTLoggerFormat, {
   skip: (req) => { return req.method != "POST" },
   stream: process.stdout 
@@ -99,7 +103,6 @@ console.log(`Server running on port ${port}`)
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
-  console.log(body)
 
   if (!body.name || !body.number) {
     return res.status(400).json({ 

@@ -137,5 +137,5 @@ function getRandomInt(max) {
 
 
 app.listen(process.env.PORT || 3001, () => {
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+  console.log("Express server listening on port in %s mode",  app.settings.env);
 });

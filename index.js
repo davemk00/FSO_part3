@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+app.use(express.static('build'))
+
 // cors middleware
 app.use(cors())
 
@@ -97,10 +99,6 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-const port = 3001
-app.listen(port)
-console.log(`Server running on port ${port}`)
-
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
@@ -135,3 +133,10 @@ app.post('/api/persons', (req, res) => {
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
+
+
+
+const port = process.env.PORT || 3001;
+server.listen(port, () => {
+  console.log("App is running on port " + port);
+});

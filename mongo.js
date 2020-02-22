@@ -20,7 +20,7 @@ if ( process.argv.length === 3 ) {
 
   console.log("phonebook:")
   Person
-  .find({}, { __v: 0 })
+  .find({})
   .then(result => {
     result.forEach(person => {
       console.log(`${person.name} ${person.number}`)

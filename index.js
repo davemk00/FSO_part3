@@ -4,6 +4,16 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+// Database connect stuffs
+const mongoose = require('mongoose')
+const password = "tHFxfeEdSVzuA28r"
+const url = `mongodb+srv://FSO_part3:${password}@cluster0-qca5l.mongodb.net/phonebook?retryWrites=true&w=majority`
+mongoose.connect(url, { useNewUrlParser: true })
+
+
+
+
+
 app.use(express.static('build'))
 
 // cors middleware
@@ -34,6 +44,10 @@ app.use(morgan(POSTLoggerFormat, {
   stream: process.stdout 
 }));
 
+const Person = mongoose.model('Person', {
+  name: String,
+  number: String   // Use string instead of number so that leading zeros are retained.
+})
 
 
 
@@ -77,7 +91,11 @@ app.get('/info', (req, res) =>{
 }) 
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person
+  .find({})
+  .then(results => {
+    res.json(results)
+  }).catch(error => console.log(error.message))
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -89,7 +107,6 @@ app.get('/api/persons/:id', (req, res) => {
   } else {
     res.status(404).end()
   }
-  
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -118,7 +135,7 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-
+d
   const person = {
     name: body.name,
     number: body.number || false,

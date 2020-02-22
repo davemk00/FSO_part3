@@ -102,6 +102,19 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
@@ -125,7 +138,7 @@ app.post('/api/persons', (req, res) => {
     name: body.name,
     number: body.number 
   })
-  console.log(person)
+  console.log(`trying to add ${person}`)
 
   person.save().then(response => {
     console.log(`added ${response.name} number ${response.number} to phonebook`)
@@ -133,6 +146,18 @@ app.post('/api/persons', (req, res) => {
     mongoose.connection.close()
   })
 })
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function getRandomInt(max) {

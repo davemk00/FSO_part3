@@ -129,7 +129,7 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-d
+
   const person = {
     name: body.name,
     number: body.number || false,

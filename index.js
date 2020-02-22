@@ -102,6 +102,18 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
@@ -111,8 +123,8 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  /*//Check that the person is already in the list 
-  const checkExists = Person.find(person => person.name.toLowerCase() === body.name.toLowerCase())
+  //Check that the person is already in the list 
+/*  const checkExists = Person.findIndex(person => person.name.toLowerCase() === body.name.toLowerCase())
   console.log(checkExists)
   if (checkExists > 0) {
     console.log("error: name already exists")
@@ -127,9 +139,10 @@ app.post('/api/persons', (req, res) => {
   })
   console.log(`trying to add ${person}`)
 
-  person.save().then(savedPerson => {
-    console.log(`added ${savedPerson.name} number ${savedPerson.number} to phonebook`)
-    res.json(person)
+  person.save().then(response => {
+    console.log(`added ${response.name} number ${response.number} to phonebook`)
+    //console.log(`added ${process.argv[3]} number ${process.argv[4]} to phonebook`)
+    mongoose.connection.close()
   })
 })
 

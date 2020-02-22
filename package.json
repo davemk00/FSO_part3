@@ -29,6 +29,7 @@
   "homepage": "https://github.com/davemk00/FSO_part3#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.9.2",
     "morgan": "^1.9.1"

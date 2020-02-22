@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -37,7 +38,7 @@ app.use(morgan(POSTLoggerFormat, {
 }));
 
 
-let persons = [
+/*let persons = [
   {
     "name": "Arto Hellas",
     "number": "040-123456",
@@ -58,7 +59,7 @@ let persons = [
     "number": "39-23-6423122",
     "id": 4
   }
-]
+]*/
 
 app.get('/', (req, res) =>{
   res.send(`<h1>DK Phonebook</h1>
@@ -77,7 +78,7 @@ app.get('/info', (req, res) =>{
 }) 
 
 app.get('/api/persons', (req, res) => {
-  Person
+  Person 
   .find({})
   .then(results => {
     res.json(results)
@@ -85,7 +86,6 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-
   const id = Number(req.params.id)
   const person = persons.find(person => person.id === id)
   if (person) {
@@ -111,32 +111,33 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  //Check that the person is already in the list 
-  const checkExists = persons.findIndex(person => person.name.toLowerCase() === body.name.toLowerCase())
-
+  /*//Check that the person is already in the list 
+  const checkExists = Person.find(person => person.name.toLowerCase() === body.name.toLowerCase())
+  console.log(checkExists)
   if (checkExists > 0) {
     console.log("error: name already exists")
     return res.status(409).json({
       error: 'name already exists'
     })
-  }
+  }*/
 
-d
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number || false,
-    id: getRandomInt(10000),
-  }
+    number: body.number 
+  })
+  console.log(`trying to add ${person}`)
 
-  persons = persons.concat(person)
-  res.json(body)
+  person.save().then(savedPerson => {
+    console.log(`added ${savedPerson.name} number ${savedPerson.number} to phonebook`)
+    res.json(person)
+  })
 })
 
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
-
+ 
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

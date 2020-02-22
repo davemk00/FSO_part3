@@ -102,18 +102,6 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
@@ -137,7 +125,7 @@ app.post('/api/persons', (req, res) => {
     name: body.name,
     number: body.number 
   })
-  console.log(`trying to add ${person}`)
+  console.log(person)
 
   person.save().then(response => {
     console.log(`added ${response.name} number ${response.number} to phonebook`)

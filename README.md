@@ -2,8 +2,6 @@
 
 backend server hosted at: https://adsfjasisdfh.herokuapp.com/
 
-
-
 **Commit 1** - Part 3.1 phonebook Step1
 
 **Commit 2** - Part 3.2 phonebook backend Step2

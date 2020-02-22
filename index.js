@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log("starting......")
 console.log(process.env.MONGODB_URI); //you can access it straight way
 const express = require('express')
 const app = express()

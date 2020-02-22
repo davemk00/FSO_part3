@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const url = process.env.MONGODB_URI;
+const url = "mongodb+srv://FSO_part3:tHFxfeEdSVzuA28r@cluster0-qca5l.mongodb.net/phonebook?retryWrites=true&w=majority";
 
 console.log('connecting to', url)
 console.log(process.env.PORT)

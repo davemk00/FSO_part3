@@ -1,8 +1,6 @@
 const express = require('express')
 const app = express()
 require('dotenv').config();
-console.log("starting......")
-console.log(process.env.MONGODB_URI); //you can access it straight way
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')

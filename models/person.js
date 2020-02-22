@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const url = process.env.MONGODB_URI
 console.log('connecting to', url)
+console.log(process.env.MONGODB_URI)
+console.log(process.env.PORT)
 
 mongoose.connect(url, { useNewUrlParser: true })
   .then(result => {    

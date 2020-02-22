@@ -74,7 +74,7 @@ app.get('/', (req, res) =>{
 
 app.get('/info', (req, res) =>{
   res.send(
-    `<p>The phonebook has info for ${persons.length} people</p>
+    `<p>The phonebook has info for ${Person.length} people</p>
     <p>${Date().toLocaleString()}</p>`)
 }) 
 
@@ -107,30 +107,32 @@ app.post('/api/persons', (req, res) => {
   const body = req.body
 
   if (!body.name || !body.number) {
+    console.log("content missing")
     return res.status(400).json({ 
       error: 'content missing'
     })
   }
 
-  //Check that the person is already in the list 
-  const checkExists = persons.findIndex(person => person.name.toLowerCase() === body.name.toLowerCase())
+  // //Check that the person is already in the list 
+  // const checkExists = Person.find(person => person.name.toLowerCase() === body.name.toLowerCase())
+  // console.log(checkExists)
+  // if (checkExists > 0) {
+  //   console.log("error: name already exists")
+  //   return res.status(409).json({
+  //     error: 'name already exists'
+  //   })
+  // }
 
-  if (checkExists > 0) {
-    console.log("error: name already exists")
-    return res.status(409).json({
-      error: 'name already exists'
-    })
-  }
 
-
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number || false,
+    number: body.number,
     id: getRandomInt(10000),
-  }
+  })
 
-  persons = persons.concat(person)
-  res.json(body)
+  person.save().then(savedPerson => {
+    res.json(savedPerson.toJSON())
+  })
 })
 
 

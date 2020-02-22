@@ -1,4 +1,6 @@
-require('dotenv').config({ path: './'})
+if (app.get('env') == 'development'){ require('dotenv').config(); }
+
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')

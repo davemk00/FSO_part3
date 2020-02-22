@@ -1,8 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(express.static('build'))
 
@@ -37,7 +39,7 @@ app.use(morgan(POSTLoggerFormat, {
 
 
 
-let persons = [
+/*let persons = [
   {
     "name": "Arto Hellas",
     "number": "040-123456",
@@ -58,7 +60,7 @@ let persons = [
     "number": "39-23-6423122",
     "id": 4
   }
-]
+]*/
 
 app.get('/', (req, res) =>{
   res.send(`<h1>DK Phonebook</h1>
@@ -77,7 +79,9 @@ app.get('/info', (req, res) =>{
 }) 
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({}).then(persons => {
+    res.json(persons.map(person => person.toJSON()))
+  })
 })
 
 app.get('/api/persons/:id', (req, res) => {

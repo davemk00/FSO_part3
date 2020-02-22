@@ -1,6 +1,5 @@
-if (app.get('env') == 'development'){ require('dotenv').config(); }
-
-
+const dotenv = require('dotenv').config();
+console.log(process.env.MONGODB_URI); //you can access it straight way
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')

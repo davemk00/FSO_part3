@@ -2,17 +2,18 @@ const express = require('express')
 const app = express()
 require('dotenv').config();
 const bodyParser = require('body-parser')
-const morgan = require('morgan')
-const cors = require('cors')
+
 const Person = require('./models/person')
-
-app.use(express.static('build'))
-
-// cors middleware
-app.use(cors())
 
 // bodyParser middleware
 app.use(bodyParser.json())
+
+// cors middleware
+const cors = require('cors')
+app.use(cors())
+
+// requestLogger Middleware
+const morgan = require('morgan')
 
 // Logger middleware when not a POST request
 // Use default 'tiny' string format
@@ -37,30 +38,7 @@ app.use(morgan(POSTLoggerFormat, {
 }));
 
 
-
-
-/*let persons = [
-  {
-    "name": "Arto Hellas",
-    "number": "040-123456",
-    "id": 1
-  },
-  {
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523",
-    "id": 2
-  },
-  {
-    "name": "Dan Abramov",
-    "number": "12-43-234345",
-    "id": 3
-  },
-  { 
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122",
-    "id": 4
-  }
-]*/
+app.use(express.static('build'))
 
 app.get('/', (req, res) =>{
   res.send(`<h1>DK Phonebook</h1>
@@ -77,31 +55,6 @@ app.get('/info', (req, res) =>{
     `<p>The phonebook has info for ${Person.length} people</p>
     <p>${Date().toLocaleString()}</p>`)
 }) 
-
-app.get('/api/persons', (req, res) => {
-  Person.find({}).then(persons => {
-    res.json(persons.map(person => person.toJSON()))
-  })
-})
-
-app.get('/api/persons/:id', (req, res) => {
-
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
-  
-})
-
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
-
-  res.status(204).end()
-})
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
@@ -135,10 +88,65 @@ app.post('/api/persons', (req, res) => {
   })
 })
 
+app.get('/api/persons', (req, res) => {
+  Person.find({}).then(persons => {
+    res.json(persons.map(person => person.toJSON()))
+  })
+})
+
+
+app.get('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id;
+  Person.findById(id)
+    .then(person =>{
+      console.log(person);
+      if (person) {
+        res.json(person.toJSON())
+      } else {
+        res.status(404).end()
+      }
+    }) 
+    .catch(error => {
+      next(error)
+    })    
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = req.params.id;
+  Person.findByIdAndRemove(id)
+  .then(result => {
+    res.status(204).end()
+  })
+  .catch(error => next(error))
+})
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
+
+
+
+
+
+
+
+// handler of requests with unknown endpoint
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
+
+// error Handler Middleware
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return res.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).send({ error: 'input error'});
+  }
+  next(error);
+}
+app.use(errorHandler)
 
 
 const PORT = process.env.PORT || 3001

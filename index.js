@@ -3,9 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
-
-const Person = require('./models/person')
-
+const mongoose = require('mongoose')
 
 app.use(express.static('build'))
 
@@ -37,10 +35,6 @@ app.use(morgan(POSTLoggerFormat, {
   stream: process.stdout 
 }));
 
-const Person = mongoose.model('Person', {
-  name: String,
-  number: String   // Use string instead of number so that leading zeros are retained.
-})
 
 
 
@@ -85,10 +79,14 @@ app.get('/info', (req, res) =>{
 
 app.get('/api/persons', (req, res) => {
   Person
-  .find({})
-  .then(results => {
-    res.json(results)
+  .find({}, { __v: 0 })
+  .then(result => {
+    result.forEach(person => {
+      console.log(`${person.name} ${person.number}`)
+    })
+    mongoose.connection.close()
   }).catch(error => console.log(error.message))
+  
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -100,6 +98,7 @@ app.get('/api/persons/:id', (req, res) => {
   } else {
     res.status(404).end()
   }
+  
 })
 
 app.delete('/api/persons/:id', (req, res) => {

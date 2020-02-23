@@ -51,9 +51,11 @@ app.get('/', (req, res) =>{
 })
 
 app.get('/info', (req, res) =>{
-  res.send(
-    `<p>The phonebook has info for ${Person.length} people</p>
-    <p>${Date().toLocaleString()}</p>`)
+  Person.find({}).then(persons => {
+    res.send(
+      `<p>The phonebook has info for ${persons.length} people</p>
+      <p>${Date().toLocaleString()}</p>`)
+    })
 }) 
 
 const formatPerson = (person) => {
@@ -142,12 +144,12 @@ app.get('/api/persons/:id', (req, res, next) => {
 app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id;
   Person.findByIdAndRemove(id)
-    .then(result => {
-      res.status(204).end()
-    })
-    .catch(error => 
-      next(error)
-    )
+  .then(result => {
+    res.status(204).end()
+  })
+  .catch(error => 
+    next(error)
+  )
 })
 
 function getRandomInt(max) {

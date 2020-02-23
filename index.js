@@ -56,8 +56,38 @@ app.get('/info', (req, res) =>{
     <p>${Date().toLocaleString()}</p>`)
 }) 
 
+const formatPerson = (person) => {
+  return {
+    name: person.name,
+    number: person.number,
+    id: person._id
+  }
+}
+
+app.put('/api/persons/:id', (req, res) => {
+  const body = req.body;
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: req.params.id,
+  }
+
+  Person
+    .findByIdAndUpdate(req.params.id, person, { new: true})
+    .then(updated  => {
+      res.json(formatPerson(updated))
+      //res.json(updated.toJSON())
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(400).send({ error: 'Malformatted id' })
+    })
+})
+
+
 app.post('/api/persons', (req, res) => {
-  const body = req.body
+  const body = req.body;
+  const id = req.params.id;
 
   if (!body.name || !body.number) {
     console.log("content missing")
@@ -66,28 +96,26 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  // //Check that the person is already in the list 
-  // const checkExists = Person.find(person => person.name.toLowerCase() === body.name.toLowerCase())
-  // console.log(checkExists)
-  // if (checkExists > 0) {
-  //   console.log("error: name already exists")
-  //   return res.status(409).json({
-  //     error: 'name already exists'
-  //   })
-  // }
-
-
   const person = new Person({
     name: body.name,
     number: body.number,
     id: getRandomInt(10000),
   })
+  
+  Person
+    .findOne({ name: body.name })
+    .then(found => {
+      if (found) {
+        console.log("NAME ALREADY EXISTS")
 
-  person.save().then(savedPerson => {
-    res.json(savedPerson.toJSON())
+      } else {                                        // Save as new entry
+        person.save().then(savedPerson => {
+          res.json(savedPerson.toJSON())
+        })
+      }
   })
 })
-
+    
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
     res.json(persons.map(person => person.toJSON()))
@@ -114,10 +142,12 @@ app.get('/api/persons/:id', (req, res, next) => {
 app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id;
   Person.findByIdAndRemove(id)
-  .then(result => {
-    res.status(204).end()
-  })
-  .catch(error => next(error))
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => 
+      next(error)
+    )
 })
 
 function getRandomInt(max) {

@@ -18,17 +18,16 @@ if ( process.argv.length<3 ) {
 
 if ( process.argv.length === 3 ) {
 
-  console.log("phonebook:")
+  console.log('phonebook:')
   Person
-  .find({})
-  .then(result => {
-    result.forEach(person => {
-      console.log(`${person.name} ${person.number}`)
-    })
-    mongoose.connection.close()
-  }).catch(error => console.log(error.message))
-  
-} 
+    .find({})
+    .then(result => {
+      result.forEach(person => {
+        console.log(`${person.name} ${person.number}`)
+      })
+      mongoose.connection.close()
+    }).catch(error => console.log(error.message))
+}
 
 else if ( process.argv.length === 5 ) {
 

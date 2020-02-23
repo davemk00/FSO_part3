@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-require('dotenv').config();
+require('dotenv').config()
 const bodyParser = require('body-parser')
 
 const Person = require('./models/person')
@@ -17,30 +17,30 @@ const morgan = require('morgan')
 
 // Logger middleware when not a POST request
 // Use default 'tiny' string format
-app.use(morgan('tiny', { 
-  skip: (req) => { return req.method == "POST" },
-  stream: process.stdout 
-}));
+app.use(morgan('tiny', {
+  skip: (req) => { return req.method === 'POST' },
+  stream: process.stdout
+}))
 
 // Logger when it is a POST request
 // Create new token
 morgan.token('reqData', (req) => {
-  return(JSON.stringify({ "name": req.body.name, "number": req.body.number}))
-});
+  return(JSON.stringify({ 'name': req.body.name, 'number': req.body.number }))
+})
 
 // set string format
-var POSTLoggerFormat = ':method :url :status :res[content-length] - :response-time ms :reqData';
+var POSTLoggerFormat = ':method :url :status :res[content-length] - :response-time ms :reqData'
 
 // log POST using string format and created token
 app.use(morgan(POSTLoggerFormat, {
-  skip: (req) => { return req.method != "POST" },
-  stream: process.stdout 
-}));
+  skip: (req) => { return req.method !== 'POST' },
+  stream: process.stdout
+}))
 
 
 app.use(express.static('build'))
 
-app.get('/', (req, res) =>{
+app.get('/', (req, res) => {
   res.send(`<h1>DK Phonebook</h1>
   <p>Use:
   <ul>
@@ -50,13 +50,13 @@ app.get('/', (req, res) =>{
   </ul></p>`)
 })
 
-app.get('/info', (req, res) =>{
+app.get('/info', (req, res) => {
   Person.find({}).then(persons => {
     res.send(
       `<p>The phonebook has info for ${persons.length} people</p>
       <p>${Date().toLocaleString()}</p>`)
-    })
-}) 
+  })
+})
 
 const formatPerson = (person) => {
   return {
@@ -67,7 +67,7 @@ const formatPerson = (person) => {
 }
 
 app.put('/api/persons/:id', (req, res) => {
-  const body = req.body;
+  const body = req.body
   const person = {
     name: body.name,
     number: body.number,
@@ -75,7 +75,7 @@ app.put('/api/persons/:id', (req, res) => {
   }
 
   Person
-    .findByIdAndUpdate(req.params.id, person, { new: true})
+    .findByIdAndUpdate(req.params.id, person, { new: true })
     .then(updated  => {
       res.json(formatPerson(updated))
       //res.json(updated.toJSON())
@@ -88,12 +88,11 @@ app.put('/api/persons/:id', (req, res) => {
 
 
 app.post('/api/persons', (req, res, next) => {
-  const body = req.body;
-  const id = req.params.id;
+  const body = req.body
 
   if (!body.name || !body.number) {
-    console.log("content missing")
-    return res.status(400).json({ 
+    console.log('content missing')
+    return res.status(400).json({
       error: 'content missing'
     })
   }
@@ -103,7 +102,7 @@ app.post('/api/persons', (req, res, next) => {
     number: body.number,
     id: getRandomInt(10000),
   })
-  
+
   Person
     .findOne({ name: body.name })
     .then(found => {
@@ -117,14 +116,14 @@ app.post('/api/persons', (req, res, next) => {
             res.json(savedAndFormattedPerson)
           })
           .catch(error => {
-            console.log(error.errors.message);
+            console.log(error.errors.message)
             //res.status(400).send({ error: error.errors.number.message })
             next(error)
           })
       }
-  })
+    })
 })
-    
+
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
     res.json(persons.map(person => person.toJSON()))
@@ -133,34 +132,34 @@ app.get('/api/persons', (req, res) => {
 
 
 app.get('/api/persons/:id', (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.id
   Person.findById(id)
-    .then(person =>{
-      console.log(person);
+    .then(person => {
+      console.log(person)
       if (person) {
         res.json(person.toJSON())
       } else {
         res.status(404).end()
       }
-    }) 
+    })
     .catch(error => {
       next(error)
-    })    
+    })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = req.params.id;
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
   Person.findByIdAndRemove(id)
-  .then(result => {
-    res.status(204).end()
-  })
-  .catch(error => 
-    next(error)
-  )
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error =>
+      next(error)
+    )
 })
 
 function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
+  return Math.floor(Math.random() * Math.floor(max))
 }
 
 
@@ -181,17 +180,17 @@ const errorHandler = (error, req, res, next) => {
       if (error.errors.number.kind === 'minlength') {
         return res.status(400).send({ error: 'number not long enough' })
       } else {
-        return res.status(400).send({ error: 'unknown Number input error'});
+        return res.status(400).send({ error: 'unknown Number input error' })
       }
     } else if (error.errors.name) {
       if (error.errors.name.kind === 'minlength') {
         return res.status(400).send({ error: 'Name not long enough' })
       } else {
-        return res.status(400).send({ error: 'unknown Name input error'});
+        return res.status(400).send({ error: 'unknown Name input error' })
       }
     }
   }
-  next(error);
+  next(error)
 }
 app.use(errorHandler)
 

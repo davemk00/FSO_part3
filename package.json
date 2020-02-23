@@ -11,7 +11,8 @@
     "deploy": "git push heroku master",
     "deploy:heroku": "npm run build:ui && npm run deploy",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "morgan": "^1.9.1"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "nodemon": "^2.0.2"
   }
 }

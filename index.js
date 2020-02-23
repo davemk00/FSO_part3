@@ -87,7 +87,7 @@ app.put('/api/persons/:id', (req, res) => {
 })
 
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body;
   const id = req.params.id;
 
@@ -108,12 +108,19 @@ app.post('/api/persons', (req, res) => {
     .findOne({ name: body.name })
     .then(found => {
       if (found) {
-        console.log("NAME ALREADY EXISTS")
+        res.status(400).send({ error: 'Name already exists' })
 
       } else {                                        // Save as new entry
-        person.save().then(savedPerson => {
-          res.json(savedPerson.toJSON())
-        })
+        person.save()
+          .then(savedPerson => savedPerson.toJSON())
+          .then (savedAndFormattedPerson => {
+            res.json(savedAndFormattedPerson)
+          })
+          .catch(error => {
+            console.log(error.errors.message);
+            //res.status(400).send({ error: error.errors.number.message })
+            next(error)
+          })
       }
   })
 })
@@ -158,10 +165,6 @@ function getRandomInt(max) {
 
 
 
-
-
-
-
 // handler of requests with unknown endpoint
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' })
@@ -174,7 +177,19 @@ const errorHandler = (error, req, res, next) => {
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return res.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return res.status(400).send({ error: 'input error'});
+    if (error.errors.number) {
+      if (error.errors.number.kind === 'minlength') {
+        return res.status(400).send({ error: 'number not long enough' })
+      } else {
+        return res.status(400).send({ error: 'unknown Number input error'});
+      }
+    } else if (error.errors.name) {
+      if (error.errors.name.kind === 'minlength') {
+        return res.status(400).send({ error: 'Name not long enough' })
+      } else {
+        return res.status(400).send({ error: 'unknown Name input error'});
+      }
+    }
   }
   next(error);
 }

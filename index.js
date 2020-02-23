@@ -40,14 +40,32 @@ app.use(morgan(POSTLoggerFormat, {
 
 app.use(express.static('build'))
 
-app.get('/', (req, res) => {
+app.get('/use', (req, res) => {
   res.send(`<h1>DK Phonebook</h1>
-  <p>Use:
+  <p>Use:</p>
+  <table>
   <ul>
-  <li>./api/persons</li> 
-  <li>./api/persons/#</li> 
-  <li>./info</li> 
-  </ul></p>`)
+  <tr>
+    <td>./</td>
+    <td>use front end app</td>
+  </tr> 
+  <tr>
+    <td>./api/persons</td>
+    <td>retreive all information</td>
+  </tr> 
+  <tr>
+    <td>./api/persons/#</td>
+    <td>retrieve information of entry</td>
+  </tr> 
+  <tr>
+    <td>./info</td>
+    <td>returns simple information of data</td>
+  </tr> 
+  <tr>
+    <td>./use</td>
+    <td>this page</td>
+  </tr> 
+  </table>`)
 })
 
 app.get('/info', (req, res) => {
@@ -117,7 +135,6 @@ app.post('/api/persons', (req, res, next) => {
           })
           .catch(error => {
             console.log(error.errors.message)
-            //res.status(400).send({ error: error.errors.number.message })
             next(error)
           })
       }

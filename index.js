@@ -5,6 +5,11 @@ const bodyParser = require('body-parser')
 
 const Person = require('./models/person')
 
+/****
+ * Middleware section
+ */
+
+
 // bodyParser middleware
 app.use(bodyParser.json())
 
@@ -37,6 +42,10 @@ app.use(morgan(POSTLoggerFormat, {
   stream: process.stdout
 }))
 
+
+/*****
+ * routing of URLs
+ */
 
 app.use(express.static('build'))
 
@@ -181,6 +190,9 @@ function getRandomInt(max) {
 }
 
 
+/**
+ * Error Handling
+ */
 
 // handler of requests with unknown endpoint
 const unknownEndpoint = (req, res) => {

@@ -100,7 +100,9 @@ app.put('/api/persons/:id', (req, res) => {
     })
     .catch(error => {
       console.log(error)
-      res.status(400).send({ error: 'Malformatted id' })
+      res.status(400).send({
+        error: 'Malformatted id'
+      })
     })
 })
 
@@ -134,7 +136,6 @@ app.post('/api/persons', (req, res, next) => {
             res.json(savedAndFormattedPerson)
           })
           .catch(error => {
-            console.log(error.errors.message)
             next(error)
           })
       }
